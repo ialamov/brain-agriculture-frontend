@@ -7,8 +7,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({ children, loading, variant, ...rest }: Props) {
-  // Only allow 'primary', 'secondary', or 'ghost' for BaseButton
-  const allowedVariants = ['primary', 'secondary', 'ghost'] as const;
+  const allowedVariants = ['primary', 'secondary', 'ghost', 'third'] as const;
   const safeVariant = allowedVariants.includes(variant as any) ? variant : undefined;
 
   return (

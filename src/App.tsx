@@ -1,9 +1,8 @@
-import { Route, Routes } from 'react-router-dom'
-import GlobalStyles from './GlobalStyles'
-import Login from './pages/Login/Login'
-import ProtectedRoute from './components/guards/ProtectedRoute'
-import Home from './pages/Home/Home'
-
+import { Route, Routes } from 'react-router-dom';
+import GlobalStyles from './GlobalStyles';
+import Login from './pages/Login/Login';  
+import ProtectedRoute from './components/guards/ProtectedRoute';
+import Home from './pages/Home/Home';
 
 function App() {
   return (
