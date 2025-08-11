@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmail, minLen } from '../../utils/validators';
 import { useNavigate } from 'react-router-dom';
 import { signIn, hydrate } from '../../store/auth/thunks';
-import { register } from '../../service/authApi';
+import { register } from '../../service/authApi/authApi';
 
 const Login = () => {
   

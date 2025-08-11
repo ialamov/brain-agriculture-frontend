@@ -88,5 +88,5 @@ const landOK = (area: { total: number; arable: number; vegetation: number; }) =>
   return (area.arable + area.vegetation) <= area.total;
 }
 
-export { isEmail, minLen, validateCPF, validateCNPJ, isValidDoc, landOK }
+export { isEmail, minLen, validateCPF, validateCNPJ, isValidDoc, landOK, removeDots }
 

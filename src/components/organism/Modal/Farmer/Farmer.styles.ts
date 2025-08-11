@@ -1,0 +1,67 @@
+import styled from "@emotion/styled";
+
+const Overlay = styled.div`
+  position: fixed; 
+  inset: 0; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  background: rgba(0,0,0,.4); 
+  z-index: 1000;
+`;
+
+const Dialog = styled.form`
+  width: 100%; 
+  max-width: 520px; 
+  background: #fff; 
+  border: 1px solid #E5E7EB;
+  border-radius: 16px; 
+  box-shadow: 0 6px 24px rgba(0,0,0,.18); 
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+`;
+
+const Head = styled.div`
+  padding: 16px 20px; 
+  border-bottom: 1px solid #E5E7EB; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  h2 { 
+    margin: 0; 
+    font-size: 18px; 
+    color: #1B4332; 
+  }
+`;
+
+const Error = styled.small` 
+  color: #D9534F; 
+`;
+
+const Foot = styled.div` 
+  padding: 16px 20px; 
+  border-top: 1px solid #E5E7EB; 
+  display: flex; 
+  gap: 12px; 
+  justify-content: flex-end; 
+`;
+
+const Btn = styled.button<{variant?:'secondary'}>`
+  height: 44px; 
+  border: none; 
+  border-radius: 10px; font-weight: 600; 
+  cursor: pointer; 
+  padding: 0 14px;
+  background: ${p=>p.variant==='secondary' ? '#E9ECEF' : '#2D6A4F'};
+  color: ${p=>p.variant==='secondary' ? '#243127' : '#fff'};
+  &:disabled{ 
+    opacity:.6; 
+    cursor:not-allowed; 
+  }
+`;
+
+const Body = styled.div` 
+  padding: 16px 20px; 
+`;
+
+export { Overlay, Dialog, Head, Error, Foot, Btn, Body };

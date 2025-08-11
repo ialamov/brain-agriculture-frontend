@@ -29,7 +29,12 @@ export function authReducer(state: AuthState = initialState, action: AuthActions
       return { ...state, status: 'error', error: action.payload || 'Sign-in failed' };
 
     case AUTH_LOGOUT:
-      return { status: 'idle', error: action.payload };
+      return { 
+        status: 'idle', 
+        accessToken: undefined,
+        user: { id: '', email: '' },
+        error: action.payload 
+      };
 
     case AUTH_HYDRATE:
       return {

@@ -5,9 +5,7 @@ const Page = styled.main`
   display:grid; 
   gap:24px; 
   background:#F3F5F4;
-  @media (max-width:599px){ 
-    padding:16px; 
-  }
+  @media (max-width:599px){ padding:16px; }
 `;
 
 export { Page };

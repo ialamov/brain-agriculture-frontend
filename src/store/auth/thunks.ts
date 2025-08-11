@@ -1,6 +1,6 @@
 import type { ThunkAction } from 'redux-thunk';
 import type { AnyAction } from 'redux';
-import { login } from '../../service/authApi';
+import { login } from '../../service/authApi/authApi';
 import {
   signInRequest, signInSuccess, signInFailure,
   hydrateAction
