@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { thunk } from 'redux-thunk';
-import rootReducer from '../store/root-reducer';
 import { attachInterceptors } from '../service/api';
 import { hydrate } from '../store/auth/thunks';
+import rootReducer from './root-reducer';
 
 export type RootState = ReturnType<typeof rootReducer>;
 
