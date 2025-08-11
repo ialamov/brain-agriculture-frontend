@@ -6,9 +6,17 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
 };
 
-export default function Button({children, loading, ...rest}: Props) {
+export default function Button({ children, loading, variant, ...rest }: Props) {
+  // Only allow 'primary', 'secondary', or 'ghost' for BaseButton
+  const allowedVariants = ['primary', 'secondary', 'ghost'] as const;
+  const safeVariant = allowedVariants.includes(variant as any) ? variant : undefined;
+
   return (
-    <BaseButton {...rest} aria-busy={loading}>
+    <BaseButton
+      {...rest}
+      variant={safeVariant as 'primary' | 'secondary' | 'ghost' | undefined}
+      aria-busy={loading}
+    >
       {loading ? 'Entrando…' : children}
     </BaseButton>
   );

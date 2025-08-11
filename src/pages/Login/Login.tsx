@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmail, minLen } from '../../utils/validators';
 import { useNavigate } from 'react-router-dom';
-import { signIn } from '../../store/auth/thunks';
+import { signIn, hydrate } from '../../store/auth/thunks';
 import { register } from '../../service/authApi';
 
 const Login = () => {
@@ -21,6 +21,10 @@ const Login = () => {
   
     const emailError = email && !isEmail(email) ? 'E-mail inválido' : undefined;
     const passError = password && !minLen(password, 8) ? 'Mínimo 8 caracteres' : undefined;
+
+    useEffect(() => {
+      dispatch(hydrate());
+    }, [dispatch]);
 
     useEffect(() => {
       if (status === 'authenticated') {
