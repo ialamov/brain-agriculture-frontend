@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AppBar from "../../components/organism/AppBar";
 import { Grid } from "../../components/organism/Grid";
 import { GridFastAccess } from "../../components/organism/Grid/GridFastAccess";
 import { loadSummary, loadTotalAreaRegistered } from "../../store/home/thunks";
 import { Page } from "./Home.styles";
+import { isJwtExpired } from "../../utils/validators";
+import { STORAGE_KEY } from "../../store/auth/thunks";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -15,7 +17,11 @@ const Home = () => {
   const accessToken = useSelector((s: any) => s.auth.accessToken);
 
   useEffect(() => { 
-    if (authStatus === 'authenticated' && accessToken) {
+    if (isJwtExpired(accessToken)) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    
+    if (authStatus === 'authenticated') {
       dispatch<any>(loadSummary());
       dispatch<any>(loadTotalAreaRegistered());
     }

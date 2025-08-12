@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 const isEmail = (v: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   }
@@ -88,5 +90,13 @@ const landOK = (area: { total: number; arable: number; vegetation: number; }) =>
   return (area.arable + area.vegetation) <= area.total;
 }
 
-export { isEmail, minLen, validateCPF, validateCNPJ, isValidDoc, landOK, removeDots }
+const isJwtExpired = (token: string, skewSeconds = 60): boolean => {
+  const p = jwtDecode(token);
+  if (!p) return true;              
+  if (!p.exp) return false;        
+  const now = Math.floor(Date.now() / 1000);
+  return now >= (p.exp - skewSeconds);
+}
+
+export { isEmail, minLen, validateCPF, validateCNPJ, isValidDoc, landOK, removeDots, isJwtExpired }
 
