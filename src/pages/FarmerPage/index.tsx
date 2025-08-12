@@ -6,12 +6,16 @@ import AppBar from '../../components/organism/AppBar';
 import FarmersTable from '../../components/organism/FarmerTable';
 import type { RootState } from '../../store/store';
 import type { FarmerRow } from '../../components/organism/FarmerTable/type';
+import { deleteFarmer } from '../../service/agriculture/agricultureApi';
 
 export default function FarmersListPage(){
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const [rows, setRows] = useState<FarmerRow[]>([]);
   const { items: error, loading } = useSelector((state: RootState) => state.farmers);
+  const [selectedFarmer, setSelectedFarmer] = useState<{id: string, doc: string} | undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [originBtn, setOriginBtn] = useState<'edit' | 'create' | null>(null);
   
   async function refresh() {
     try {
@@ -32,9 +36,12 @@ export default function FarmersListPage(){
     <>
       <AppBar />
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'16px 24px'}}>
-        <h1>Farmers</h1>
+        <h1>Lista de Produtores</h1>
         <button 
-          onClick={()=>setOpen(true)} 
+          onClick={()=>{
+            setOpen(true)
+            setOriginBtn('create')
+          }} 
           style={{
             height:40,
             padding:'0 14px',
@@ -44,7 +51,7 @@ export default function FarmersListPage(){
             color:'#fff',
             fontWeight:600
           }}>
-            Novo Farmer
+            Novo Produtor
           </button>
       </div>
 
@@ -63,6 +70,15 @@ export default function FarmersListPage(){
               // @ts-ignore - Redux thunk dispatch typing issue
               dispatch(fetchFarmers({ page: p, pageSize: typeof pageSize === 'number' ? pageSize : 20 }));
             }}
+            onEdit={(id: string) => {
+              setOpen(true);
+              setOriginBtn('edit');
+              setSelectedFarmer({id, doc: rows.find(r => r.id === id)?.doc || ''});
+            }}
+            onDelete={(id: string) => {
+              deleteFarmer(id);
+              refresh();
+            }}
           />
         </div>
       )}
@@ -71,6 +87,8 @@ export default function FarmersListPage(){
         open={open}
         onClose={()=>setOpen(false)}
         onCreated={()=>refresh()}
+        selectedFarmer={selectedFarmer}
+        originBtn={originBtn}
       />
     </>
   );

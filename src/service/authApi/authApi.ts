@@ -6,7 +6,6 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     const response = await api.post<LoginResponse>('/auth/login', payload);
     return { user: response.data.user, accessToken: response.data.accessToken };
   } catch (error) {
-    console.log('error', error);
     window.alert('Erro ao fazer login');
     throw new Error('Login failed');
   }

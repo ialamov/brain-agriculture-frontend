@@ -12,6 +12,7 @@ type Props = {
   loading?: boolean;
   onEdit?: (id: string) => void;
   onPageChange?: (page: number) => void;
+  onDelete?: (id: string) => void;
 };
 
 export type { FarmerRow, Props };

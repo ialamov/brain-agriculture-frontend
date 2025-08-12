@@ -4,6 +4,10 @@ export const HOME_SUMMARY_REQ = 'home/SUMMARY_REQ' as const;
 export const HOME_SUMMARY_OK  = 'home/SUMMARY_OK'  as const;
 export const HOME_SUMMARY_ERR = 'home/SUMMARY_ERR' as const;
 
+export const HOME_TOTAL_AREA_REGISTERED_REQ = 'home/TOTAL_AREA_REGISTERED_REQ' as const;
+export const HOME_TOTAL_AREA_REGISTERED_OK  = 'home/TOTAL_AREA_REGISTERED_OK'  as const;
+export const HOME_TOTAL_AREA_REGISTERED_ERR = 'home/TOTAL_AREA_REGISTERED_ERR' as const;
+
 export const HOME_STATE_REQ = 'home/STATE_REQ' as const;
 export const HOME_STATE_OK  = 'home/STATE_OK'  as const;
 export const HOME_STATE_ERR = 'home/STATE_ERR' as const;
@@ -16,10 +20,17 @@ export const HOME_LAND_REQ = 'home/LAND_REQ' as const;
 export const HOME_LAND_OK  = 'home/LAND_OK'  as const;
 export const HOME_LAND_ERR = 'home/LAND_ERR' as const;
 
+export const HOME_ALL_YEARS_AND_CROPS_REQ = 'home/ALL_YEARS_AND_CROPS_REQ' as const;
+export const HOME_ALL_YEARS_AND_CROPS_OK  = 'home/ALL_YEARS_AND_CROPS_OK'  as const;
+export const HOME_ALL_YEARS_AND_CROPS_ERR = 'home/ALL_YEARS_AND_CROPS_ERR' as const;
+
 export type HomeActions =
   | { type: typeof HOME_SUMMARY_REQ }
   | { type: typeof HOME_SUMMARY_OK; payload: Summary }
   | { type: typeof HOME_SUMMARY_ERR; payload: string }
+  | { type: typeof HOME_TOTAL_AREA_REGISTERED_REQ }
+  | { type: typeof HOME_TOTAL_AREA_REGISTERED_OK; payload: number }
+  | { type: typeof HOME_TOTAL_AREA_REGISTERED_ERR; payload: string }
   | { type: typeof HOME_STATE_REQ; payload: { entity: string } }
   | { type: typeof HOME_STATE_OK;  payload: { entity: string; data: KV[] } }
   | { type: typeof HOME_STATE_ERR; payload: { entity: string; error: string } }
@@ -28,4 +39,7 @@ export type HomeActions =
   | { type: typeof HOME_CROP_ERR;  payload: { season?: string; error: string } }
   | { type: typeof HOME_LAND_REQ }
   | { type: typeof HOME_LAND_OK;   payload: LandUse }
-  | { type: typeof HOME_LAND_ERR;  payload: string };
+  | { type: typeof HOME_LAND_ERR;  payload: string }
+  | { type: typeof HOME_ALL_YEARS_AND_CROPS_REQ }
+  | { type: typeof HOME_ALL_YEARS_AND_CROPS_OK; payload: { years: string[]; crops: Crop[] } }
+  | { type: typeof HOME_ALL_YEARS_AND_CROPS_ERR; payload: string };

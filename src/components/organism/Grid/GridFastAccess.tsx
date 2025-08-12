@@ -15,12 +15,8 @@ const GridFastAccess = () => {
         <CTA onClick={()=>navigate('/farms')}>Abrir</CTA>
       </Tile>
       <Tile>
-        <Head><Icon>H</Icon><div><Title>Safra</Title><Sub>3º Adicione safras por fazenda</Sub></div></Head>
+        <Head><Icon>H</Icon><div><Title>Safra</Title><Sub>3º Adicione safras por fazenda e cultura por safra</Sub></div></Head>
         <CTA onClick={()=>navigate('/harvests')}>Abrir</CTA>
-      </Tile>
-      <Tile>
-        <Head><Icon>C</Icon><div><Title>Cultura</Title><Sub>4º Cadastre culturas por cultura</Sub></div></Head>
-        <CTA onClick={()=>navigate('/crops')}>Abrir</CTA>
       </Tile>
     </GridStyles>
   );

@@ -2,7 +2,7 @@ import type { ThunkAction } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { RootState } from '../store';
 import * as A from './actions';
-import { getSummary, getByState, getByCrop, getLandUse } from '../../service/metrics/metricsApi';
+import { getSummary, getByState, getByCrop, getTotalAreaRegistered } from '../../service/metrics/metricsApi';
 
 type Thunk<R = void> = ThunkAction<Promise<R> | R, RootState, unknown, AnyAction>;
 
@@ -13,6 +13,17 @@ export const loadSummary = (): Thunk => async (dispatch) => {
     dispatch({ type: A.HOME_SUMMARY_OK, payload: data });
   } catch (e: any) {
     dispatch({ type: A.HOME_SUMMARY_ERR, payload: e?.message || 'Erro ao carregar KPIs' });
+  }
+};
+
+export const loadTotalAreaRegistered = (): Thunk => async (dispatch) => {
+  try {
+    dispatch({ type: A.HOME_TOTAL_AREA_REGISTERED_REQ });
+    const data = await getTotalAreaRegistered();
+    dispatch({ type: A.HOME_TOTAL_AREA_REGISTERED_OK, payload: data });
+    return data;
+  } catch (e: any) {
+    dispatch({ type: A.HOME_TOTAL_AREA_REGISTERED_ERR, payload: e?.message || 'Erro ao carregar área total registrada' });
   }
 };
 
@@ -33,15 +44,5 @@ export const loadByCrop = (season?: string): Thunk => async (dispatch) => {
     dispatch({ type: A.HOME_CROP_OK, payload: { season, data } });
   } catch (e: any) {
     dispatch({ type: A.HOME_CROP_ERR, payload: { season, error: e?.message || 'Erro por cultura' } });
-  }
-};
-
-export const loadLandUse = (): Thunk => async (dispatch) => {
-  try {
-    dispatch({ type: A.HOME_LAND_REQ });
-    const data = await getLandUse();
-    dispatch({ type: A.HOME_LAND_OK, payload: data });
-  } catch (e: any) {
-    dispatch({ type: A.HOME_LAND_ERR, payload: e?.message || 'Erro uso do solo' });
   }
 };

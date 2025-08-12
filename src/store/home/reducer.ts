@@ -1,3 +1,4 @@
+import type { Crop } from '../../service/agriculture/types';
 import type { Summary, KV, LandUse } from '../../service/metrics/types';
 import * as A from './actions';
 
@@ -6,11 +7,15 @@ export type HomeState = {
   byState: Record<'farmers'|'farms'|'harvests'|'crops', KV[]>;
   byCrop?: { season?: string; data: KV[] };
   landUse?: LandUse;
+  totalAreaRegistered: number;
+  allYearsAndCrops?: { years: string[]; crops: Crop[] };
   status: 'idle'|'loading'|'ready'|'error';
   error?: string;
 };
 const initial: HomeState = {
   byState: { farmers:[], farms:[], harvests:[], crops:[] },
+  totalAreaRegistered: 0,
+  allYearsAndCrops: { years: [], crops: [] },
   status: 'idle',
 };
 
@@ -34,7 +39,24 @@ export function homeReducer(state: HomeState = initial, action: A.HomeActions): 
           status:'error', 
           error: action.payload 
         };
-
+    case A.HOME_TOTAL_AREA_REGISTERED_REQ:
+      return {
+        ...state,
+        status: 'loading',
+        error: undefined
+      };
+    case A.HOME_TOTAL_AREA_REGISTERED_OK: 
+      return {
+        ...state,
+        totalAreaRegistered: action.payload,
+        status: 'ready'
+      };
+    case A.HOME_TOTAL_AREA_REGISTERED_ERR:  
+      return {
+        ...state,
+        status: 'error',
+        error: action.payload
+      };
     case A.HOME_STATE_REQ:    
       return {
         ...state,
@@ -97,7 +119,24 @@ export function homeReducer(state: HomeState = initial, action: A.HomeActions): 
         status: 'error', 
         error: action.payload 
       };
-
+    case A.HOME_ALL_YEARS_AND_CROPS_REQ:  
+      return {
+        ...state,
+        status: 'loading',
+        error: undefined
+      };
+    case A.HOME_ALL_YEARS_AND_CROPS_OK:  
+      return {
+        ...state,
+        allYearsAndCrops: action.payload,
+        status: 'ready'
+      };
+    case A.HOME_ALL_YEARS_AND_CROPS_ERR:  
+      return {
+        ...state,
+        status: 'error',
+        error: action.payload
+      };
     default: return state;
   }
 }

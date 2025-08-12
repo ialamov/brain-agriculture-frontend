@@ -2,7 +2,7 @@ import { Count, Btn, Panel, Head, Body, Table, Badge, Pag, Empty } from "./Farme
 import type { Props } from "./type";
 
 export default function FarmersTable({
-    rows, page, pageSize, total, loading, onEdit, onPageChange
+    rows, page, pageSize, total, loading, onEdit, onPageChange, onDelete
   }: Props){
     const pages = Math.max(1, Math.ceil(total / Math.max(1, pageSize)));
     return (
@@ -30,8 +30,9 @@ export default function FarmersTable({
                 {rows.map(r => (
                   <tr key={r.id}>
                     <td>{r.name}</td>
-                    <td>{r.doc || '—'}</td>
+                    <td>{r.cpf || r.cnpj || '—'}</td>
                     <td><a href="#" onClick={(e)=>{e.preventDefault(); onEdit?.(r.id);}}>Editar</a></td>
+                    <td><a href="#" onClick={(e)=>{e.preventDefault(); onDelete?.(r.id);}}>Excluir</a></td>
                   </tr>
                 ))}
               </tbody>

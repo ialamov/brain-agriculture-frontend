@@ -2,7 +2,6 @@ import type { Summary } from "../../../service/metrics/types";
 import { GridStyles, KPI, KLabel, KValue } from "./Grid.styles";
 
 const Grid = ({summary, status}: {summary: Summary, status: string}) => {
- 
   return (
     <GridStyles aria-label="Indicadores" style={{alignItems:'stretch'}}>
       <KPI>
@@ -27,6 +26,12 @@ const Grid = ({summary, status}: {summary: Summary, status: string}) => {
         <KLabel>Culturas</KLabel>
         <KValue>
           {summary?.crops ?? (status==='loading'?'…':'—')}
+        </KValue>
+      </KPI>
+      <KPI>
+        <KLabel>Total de área registrada</KLabel>
+        <KValue>
+          {summary?.totalAreaRegistered ?? (status==='loading'?'…':'—')}
         </KValue>
       </KPI>
     </GridStyles>

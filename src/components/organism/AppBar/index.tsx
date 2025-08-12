@@ -1,3 +1,4 @@
+import { STORAGE_KEY } from "../../../store/auth/thunks";
 import { AppBar as AppBarContainer, Actions, Btn } from "./AppBar.styles"
 
 const AppBar = () => {
@@ -5,8 +6,11 @@ const AppBar = () => {
     <AppBarContainer>
 			<h1>Dashboard • Hub</h1>
 			<Actions>
-				<Btn>Novo produtor</Btn>
-				<Btn variant="secondary">Nova propriedade</Btn>
+				<Btn 
+					onClick={()=>{
+					  localStorage.removeItem(STORAGE_KEY);
+					  window.location.href = '/';
+				}}>Logout</Btn>
 			</Actions>
 		</AppBarContainer>
   )

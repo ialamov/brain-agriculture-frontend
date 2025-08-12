@@ -3,30 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import AppBar from "../../components/organism/AppBar";
 import { Grid } from "../../components/organism/Grid";
 import { GridFastAccess } from "../../components/organism/Grid/GridFastAccess";
-import { loadSummary } from "../../store/home/thunks";
+import { loadSummary, loadTotalAreaRegistered } from "../../store/home/thunks";
 import { Page } from "./Home.styles";
-import type { Summary } from "../../service/metrics/types";
 
 const Home = () => {
   const dispatch = useDispatch();
   const summary = useSelector((s: any) => s.home.summary);
+  const totalAreaRegistered = useSelector((s: any) => s.home.totalAreaRegistered);
   const status  = useSelector((s: any) => s.home.status);
   const authStatus = useSelector((s: any) => s.auth.status);
   const accessToken = useSelector((s: any) => s.auth.accessToken);
 
   useEffect(() => { 
     if (authStatus === 'authenticated' && accessToken) {
-      // @ts-ignore
-      dispatch(loadSummary()); 
+      dispatch<any>(loadSummary());
+      dispatch<any>(loadTotalAreaRegistered());
     }
   }, [dispatch, authStatus, accessToken]);
-
   return (
     <>
       <AppBar />
       <Page>
         <Grid 
-          summary={summary} 
+          summary={{...summary, totalAreaRegistered: totalAreaRegistered}} 
           status={status}
         />
         <GridFastAccess />
