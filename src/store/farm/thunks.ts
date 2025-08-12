@@ -35,3 +35,14 @@ export const deleteFarmThunk = (id:string): Thunk => async (dispatch) => {
   try{ await api.deleteFarm(id); dispatch({ type:A.FARMS_DELETE_OK, payload:{ id } }); }
   catch(e:any){ dispatch({ type:A.FARMS_DELETE_ERR, payload:{ id, error:e?.message || 'Erro ao excluir farm' } }); }
 };
+
+export const fetchFarmsWithSearch = (p: { search?:string; page?:number; pageSize?:number } = {}): Thunk => async (dispatch) => {
+  const page = p.page ?? 1, pageSize = p.pageSize ?? 100;
+  dispatch({ type: A.FARMS_LIST_REQ, payload: { ...p, page, pageSize } });
+  try {
+    const res = await api.listFarmsWithSearch({ ...p, page, pageSize });
+    dispatch({ type: A.FARMS_LIST_OK, payload: res });
+  } catch (e:any) {
+    dispatch({ type: A.FARMS_LIST_ERR, payload: e?.message || 'Erro ao carregar farms' });
+  }
+};

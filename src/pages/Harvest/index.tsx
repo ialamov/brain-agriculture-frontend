@@ -1,106 +1,84 @@
-import { useDispatch, useSelector } from "react-redux";
-import { fetchHarvests } from "../../store/harvest/thunk";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { useState, useEffect, useMemo, useLayoutEffect } from "react";
-import type { Harvest } from "../../service/agriculture/types";
-import { Top, Btn, Select, Input, Controls } from "./HarvestPage.styles";   
-import HarvestsTable from "../../components/organism/HarvestTable";
-import HarvestModal from "../../components/organism/Modal/Harverst";
-import { allYearsAndCrops, listAllFarms } from "../../service/agriculture/agricultureApi";
-import type { Farm, Crop } from "../../service/agriculture/types";
+import { fetchFarms } from "../../store/farm/thunks";
+import { fetchHarvests } from "../../store/harvest/thunk";
+import { fetchCrops } from "../../store/crop/thunk";  
+import { selectHarvestRows } from "../../store/selectors/dashboards";   
+import { Top, Btn, Controls, Input, Select } from "./HarvestPage.styles";
+import HarvestsTableCross from "../../components/organism/HarvestTableCross";
 
 export default function HarvestsListPage(){
-    const dispatch = useDispatch<any>();
-    const { total, page, pageSize, loading } = useSelector((s:RootState)=> s.harvests);
-    const [items, setItems] = useState<Harvest[]>([]);
-    const [open, setOpen] = useState(false);
-    const [editing, setEditing] = useState<Harvest | null>(null);
-    const [yearsAndCrops, setYearsAndCrops] = useState<{years: string[]; crops: Crop[]} | null>(null);
-    const [q, setQ] = useState('');
-    const [farmId, setFarmId] = useState('');
-    const [season, setSeason] = useState('');
-    const [farms, setFarms] = useState<{id:string; name:string}[]>([]);
-    const [openCrop, setOpenCrop] = useState(false);
+  const dispatch = useDispatch<any>();
+  const farms = useSelector((s:RootState)=> s.farms.items);
+  const tableRows = useSelector(selectHarvestRows);
+  const { page, pageSize, loading, total } = useSelector((s:RootState)=> s.harvests);
+  console.log(farms, tableRows, page, pageSize, loading, total);
+  const [q, setQ] = useState('');
+  const [farmId, setFarmId] = useState('');
+  const [season, setSeason] = useState('');
+  const [cropName, setCropName] = useState('');
 
-    const params = useMemo(()=>({ 
-      search: q || undefined, 
-      farmId: farmId || undefined, 
-      season: season || undefined, 
-      page, 
-      pageSize 
-    }), [q, farmId, season, page, pageSize]);
+  // carregar dados base
+  useEffect(()=>{ dispatch(fetchFarms({ page:1, pageSize:100 })); }, [dispatch]);
+  useEffect(()=>{ dispatch(fetchHarvests({ page:1, pageSize:20 })); }, [dispatch]);
+  useEffect(()=>{ dispatch(fetchCrops({ page:1, pageSize:500 })); }, [dispatch]);
 
-    useEffect(()=>{ 
-      (async()=>{ 
-        try {
-          const res = await listAllFarms({ page:1, pageSize:100 });
-          setFarms(res.map((f: Farm) => ({id: f.id, name: f.name})));
+  // filtros locais (aplicados sobre as linhas selecionadas)
+  const filteredRows = useMemo(()=>{
+    const ql = q.toLowerCase().trim();
+    return tableRows.filter(r=>{
+      const okFarm = !farmId || r.farmId === farmId;
+      const okSeason = !season || r.season === season;
+      const okCrop = !cropName || r.crops.some(c => c.name.toLowerCase() === cropName.toLowerCase());
+      const okSearch = !ql || [r.season, r.farmName, ...r.crops.map(c=>c.name)].some(v => v.toLowerCase().includes(ql));
+      return okFarm && okSeason && okCrop && okSearch;
+    });
+  }, [tableRows, q, farmId, season, cropName]);
 
-          const yearsAndCrops = await dispatch(allYearsAndCrops());
-          setYearsAndCrops(yearsAndCrops);
-        } catch (error) {
-          setFarms([]);
-          setYearsAndCrops(null);
-        }
-      })(); 
-    }, []);
-  
-    useLayoutEffect(()=>{
-      (async()=>{
-        const res = await dispatch(fetchHarvests(params));
-        setItems(res.items);
-      })(); 
-    }, [dispatch, params.page, params.pageSize, params.search, params.farmId, params.season]);
-  
-    return (
-      <div style={{padding:24}}>
-        <Top>
-          <h1 style={{margin:0}}>Safras</h1>
-          <Btn onClick={
-            ()=>{ 
-              setEditing(null); 
-              setOpen(true); 
-            }}>Nova safra
-          </Btn>
-          <Btn 
-            onClick={
-              ()=>{ 
-                setEditing(null); 
-                setOpenCrop(true); 
-              }}>Nova cultura
-            </Btn>
-        </Top>
-  
-        <Controls>
-          <Input placeholder="Buscar por fazenda/safra" value={q} onChange={e=>setQ(e.target.value)} />
-          <Select value={farmId} onChange={e=>setFarmId(e.target.value)}>
-            <option value="">Todas farms</option>
-            {farms.map(f=> <option key={f.id} value={f.id}>{f.name}</option>)}
-          </Select>
-          <Select value={season} onChange={e => setSeason(e.target.value)}>
-            <option value="">Todas safras</option>
-            {Array.isArray(yearsAndCrops?.years) && yearsAndCrops.years.map((s: any) => (
-              <option key={s.id} value={s.year}>{s.year}</option>
-            ))}
-          </Select>
-        </Controls>
-  
-        <HarvestsTable
-          rows={items}
-          page={page}
-          pageSize={pageSize}
-          total={total}
-          loading={loading}
-          onEdit={(h)=>{ setEditing(h); setOpen(true); }}
-          onPageChange={(p)=> dispatch(fetchHarvests({ ...params, page:p }))}
-        />
-  
-        <HarvestModal
-          open={open}
-          harvest={editing}
-          onClose={()=>{ setOpen(false); dispatch(fetchHarvests(params)); }}
-        />
-      </div>
-    );
-  }
-  
+  // paginação simples em memória (se a API não pagina/filtra do lado servidor)
+  const start = (page-1) * pageSize;
+  const pageRows = filteredRows.slice(start, start + pageSize);
+
+  const cropOptions = Array.from(new Set(tableRows.flatMap(r => r.crops.map(c=>c.name))));
+
+  return (
+    <div>
+      <Top>
+        <h1 style={{margin:0}}>Safras</h1>
+        <div style={{display:'flex', gap:8}}>
+          <Btn onClick={()=>{/* open harvest modal */}}>Nova safra</Btn>
+          <Btn onClick={()=>{/* open crop modal */}}>Nova cultura</Btn>
+        </div>
+      </Top>
+
+      <Controls>
+        <Input placeholder="Buscar por fazenda/safra/cultura" value={q} onChange={e=>setQ(e.target.value)} />
+        <Select value={farmId} onChange={e=>setFarmId(e.target.value)}>
+          <option value="">Todas farms</option>
+          {farms.map(f=> <option key={f.id} value={f.id}>{f.name}</option>)}
+        </Select>
+        <Select value={season} onChange={e=>setSeason(e.target.value)}>
+          <option value="">Todas safras</option>
+          {Array.from(new Set(tableRows.map(r=>r.season))).map(s => <option key={s} value={s}>{s}</option>)}
+        </Select>
+        <Select value={cropName} onChange={e=>setCropName(e.target.value)}>
+          <option value="">Todas culturas</option>
+          {cropOptions.map(n => <option key={n} value={n}>{n}</option>)}
+        </Select>
+      </Controls>
+
+      <HarvestsTableCross
+        rows={pageRows}
+        page={page}
+        pageSize={pageSize}
+        total={filteredRows.length}
+        loading={loading}
+        onEdit={(id)=>{/* open edit harvest modal with id */}}
+        onAddCrop={(fid, hid)=>{/* open crop modal with farmId=fid & harvestId=hid */}}
+        onPageChange={(p)=>{/* se paginação no servidor: dispatch(fetchHarvests({ page:p })) */}}
+      />
+    </div>
+  );
+}

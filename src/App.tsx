@@ -6,6 +6,7 @@ import Home from './pages/Home/Home';
 import FarmersPage from './pages/FarmerPage/index';
 import FarmsPage from './pages/FarmPage'; 
 import HarvestsPage from './pages/Harvest/index';
+import DashboardPage from './pages/Dashboard';
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
         </Route>
         <Route path="/harvests" element={<ProtectedRoute />}>
           <Route index element={<HarvestsPage />} />
+        </Route>
+        <Route path="/dashboard" element={<ProtectedRoute />}>
+          <Route index element={<DashboardPage />} />
         </Route>
       </Routes>
     </>

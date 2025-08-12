@@ -4,6 +4,7 @@ import { homeReducer } from './home/reducer'
 import { farmersReducer } from './farmer/reducer'
 import { farmsReducer } from './farm/reducer'
 import { harvestsReducer } from './harvest/reducer'
+import { cropsReducer } from './crop/reducer'
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   farmers: farmersReducer,
   farms: farmsReducer,
   harvests: harvestsReducer,
+  crops: cropsReducer,
 })
 
 export default rootReducer

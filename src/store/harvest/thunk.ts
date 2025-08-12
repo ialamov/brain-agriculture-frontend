@@ -69,3 +69,14 @@ export const allYearsAndCrops = (): Thunk => async (dispatch) => {
     dispatch({ type: A.HARV_ALL_YEARS_AND_CROPS_ERR, payload: e?.message || 'Erro ao carregar anos e culturas' });
   }
 };
+
+export const fetchHarvestsWithSearch = (p: { farmId?:string; season?:string; search?:string; page?:number; pageSize?:number } = {}): Thunk => async (dispatch) => {
+  const page = p.page ?? 1, pageSize = p.pageSize ?? 20;
+  dispatch({ type: A.HARV_LIST_REQ, payload: { ...p, page, pageSize } });
+  try {
+    const res = await api.listHarvestsWithSearch({ ...p, page, pageSize });
+    dispatch({ type: A.HARV_LIST_OK, payload: res });
+  } catch (e:any) {
+    dispatch({ type: A.HARV_LIST_ERR, payload: e?.message || 'Erro ao carregar safra' });
+  }
+};

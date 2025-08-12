@@ -17,6 +17,10 @@ const GridFastAccess = () => {
       <Tile>
         <Head><Icon>H</Icon><div><Title>Safra</Title><Sub>3º Adicione safras por fazenda e cultura por safra</Sub></div></Head>
         <CTA onClick={()=>navigate('/harvests')}>Abrir</CTA>
+      </Tile>  
+      <Tile>
+        <Head><Icon>C</Icon><div><Title>Dashboard</Title><Sub>Acesso rápido ao dashboard</Sub></div></Head>
+        <CTA onClick={()=>navigate('/dashboard')}>Abrir</CTA>
       </Tile>
     </GridStyles>
   );

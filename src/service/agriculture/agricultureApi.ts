@@ -36,6 +36,21 @@ export async function listFarmsByFarmer(farmerId: string) {
   return data as Farm[];
 }
 
+export async function listFarmsWithSearch(params?: { search?:string; page?:number; pageSize?:number }) {
+  const { data } = await api.get<ListResponse<Farm>>('/farms', { params });
+  return data;
+}
+
+export async function listHarvestsWithSearch(params?: { search?:string; farmId?:string; season?:string; page?:number; pageSize?:number }) {
+  const { data } = await api.get<ListResponse<Harvest>>('/harvests', { params });
+  return data;
+}
+
+export async function listCropsWithSearch(params?: { farmId?:string; harvestId?:string; name?:string; page?:number; pageSize?:number }) {
+  const { data } = await api.get<ListResponse<Crop>>('/crops', { params });
+  return data;
+}
+
 export async function createFarm(payload: Omit<Farm, 'id'>) {
   const { data } = await api.post('/farms', payload);
   return data as Farm;
@@ -94,10 +109,11 @@ export async function deleteHarvest(id: string) {
   await api.delete(`/harvests/${id}`);
 }
 
-export async function listCropsByHarvest(harvestId: string) {
+export async function listCrops(harvestId: string) {
   const { data } = await api.get('/crops', { params: { harvestId }});
   return data as Crop[];
 }
+
 export async function createCrop(payload: Omit<Crop, 'id'>) {
   const { data } = await api.post('/crops', payload);
   return data as Crop;
