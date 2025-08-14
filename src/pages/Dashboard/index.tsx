@@ -21,7 +21,7 @@ export default function DashboardPage(){
 
   return (
     <Wrap>
-      <h1 style={{margin:0}}>Dashboard</h1>
+      {/* <h1 style={{margin:0}}>Dashboard</h1>
 
       <Cards>
         <Card><Label>Total de fazendas</Label><Value>{totals.totalFarms}</Value></Card>
@@ -66,7 +66,7 @@ export default function DashboardPage(){
             </PieChart>
           </ResponsiveContainer>
         </Panel>
-      </Grid>
+      </Grid> */}
     </Wrap>
   );
 }

@@ -2,30 +2,26 @@ import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import type { RootState } from "../../store/store";
-import { fetchFarms } from "../../store/farm/thunks";
-import { fetchHarvests } from "../../store/harvest/thunk";
-import { fetchCrops } from "../../store/crop/thunk";  
 import { selectHarvestRows } from "../../store/selectors/dashboards";   
 import { Top, Btn, Controls, Input, Select } from "./HarvestPage.styles";
 import HarvestsTableCross from "../../components/organism/HarvestTableCross";
+import { fetchHarvestsWithSearch } from "../../store/harvest/thunk";
+import { listCropsWithSearch, listFarmsWithSearch } from "../../service/agriculture/agricultureApi";
 
 export default function HarvestsListPage(){
   const dispatch = useDispatch<any>();
   const farms = useSelector((s:RootState)=> s.farms.items);
   const tableRows = useSelector(selectHarvestRows);
   const { page, pageSize, loading, total } = useSelector((s:RootState)=> s.harvests);
-  console.log(farms, tableRows, page, pageSize, loading, total);
   const [q, setQ] = useState('');
   const [farmId, setFarmId] = useState('');
   const [season, setSeason] = useState('');
   const [cropName, setCropName] = useState('');
 
-  // carregar dados base
-  useEffect(()=>{ dispatch(fetchFarms({ page:1, pageSize:100 })); }, [dispatch]);
-  useEffect(()=>{ dispatch(fetchHarvests({ page:1, pageSize:20 })); }, [dispatch]);
-  useEffect(()=>{ dispatch(fetchCrops({ page:1, pageSize:500 })); }, [dispatch]);
+  useEffect(()=>{ dispatch(listFarmsWithSearch({ page:1, pageSize:100 })); }, [dispatch]);
+  useEffect(()=>{ dispatch(fetchHarvestsWithSearch({ page:1, pageSize:20 })); }, [dispatch]);
+  useEffect(()=>{ dispatch(listCropsWithSearch({ page:1, pageSize:500 })); }, [dispatch]);
 
-  // filtros locais (aplicados sobre as linhas selecionadas)
   const filteredRows = useMemo(()=>{
     const ql = q.toLowerCase().trim();
     return tableRows.filter(r=>{
@@ -37,7 +33,6 @@ export default function HarvestsListPage(){
     });
   }, [tableRows, q, farmId, season, cropName]);
 
-  // paginação simples em memória (se a API não pagina/filtra do lado servidor)
   const start = (page-1) * pageSize;
   const pageRows = filteredRows.slice(start, start + pageSize);
 
@@ -77,7 +72,7 @@ export default function HarvestsListPage(){
         loading={loading}
         onEdit={(id)=>{/* open edit harvest modal with id */}}
         onAddCrop={(fid, hid)=>{/* open crop modal with farmId=fid & harvestId=hid */}}
-        onPageChange={(p)=>{/* se paginação no servidor: dispatch(fetchHarvests({ page:p })) */}}
+        onPageChange={(p)=>{ dispatch(fetchHarvests({ page:p })) }}
       />
     </div>
   );
